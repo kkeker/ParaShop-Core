@@ -1,0 +1,9 @@
+Install:
+JetBrains IDE - https://www.jetbrains.com/phpstorm/?fromMenu
+Use JetBrains License Server - http://idea.imsxm.com/
+Vagrant - https://www.vagrantup.com/downloads.html
+VirtualBox and Oracle VM VirtualBox Extension Pack - https://www.virtualbox.org/wiki/Downloads
+Add Debian8 to Vagrant - vagrant box add debian/jessie64 (Administrator)
+Install Vagrant plugin for VirtualBox FS Sync - vagrant plugin install vagrant-vbguest (Administrator)
+Add Vagrant to JetBrains - https://www.jetbrains.com/help/webstorm/2016.3/vagrant.html
+Use CouchBase on PHP - https://developer.couchbase.com/documentation/server/current/sdk/php/start-using-sdk.html
