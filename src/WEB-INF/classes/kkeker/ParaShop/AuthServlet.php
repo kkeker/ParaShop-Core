@@ -31,13 +31,12 @@ class AuthServlet extends HttpServlet
         HttpServletResponseInterface $servletResponse
     )
     {
-        $username = $this->authService->login($this->data);
+        $result = $this->authService->login($this->data);
         $session = $servletRequest->getSession(true);
         $session->start();
 
-        return array(
-            'id' => $session->getId(),
-            'username' => $username
-        );
+        $result['id'] = $session->getId();
+
+        return $result;
     }
 }

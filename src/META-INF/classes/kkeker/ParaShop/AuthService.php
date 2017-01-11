@@ -9,7 +9,6 @@
 namespace kkeker\ParaShop;
 
 use CouchbaseCluster;
-use CouchbaseN1qlQuery;
 use Respect\Validation\Validator as v;
 
 /**
@@ -18,15 +17,15 @@ use Respect\Validation\Validator as v;
  */
 class AuthService
 {
-    protected $username;
+    protected $login;
     protected $password;
 
     /**
-     * @Requires(type="RespectValidation", constraint="v::not(v::email()->setName('Username'))->check($username)")
+     * @Requires(type="RespectValidation", constraint="v::not(v::email()->setName('Username'))->check($login)")
      */
-    protected function setUsername($username)
+    protected function setLogin($login)
     {
-        $this->username = $username;
+        $this->login = $login;
     }
 
     /**
@@ -43,14 +42,18 @@ class AuthService
         $cluster = new CouchbaseCluster($settings->couchUrl);
         $bucket = $cluster->openBucket($settings->couchUsersBucker);
 
-        $query = CouchbaseN1qlQuery::fromString("select `login`,`password` from `users` where `login` = '$this->username'");
-        $result = $bucket->query($query);
+        $result = $bucket->get($this->login);
 
-        if ($result->status == 'success') {
-            if ($result->metrics['resultCount'] > 0) {
-                if ($result->rows[0]->login == $this->username && $result->rows[0]->password == $this->password) {
-                    return $this->username;
-                }
+        if (is_null($result->error)) {
+            if ($result->value->login == $this->login && $result->value->password == $this->password) {
+
+                $result->value->lastLogin = time();
+                $bucket->replace($this->login, $result->value);
+
+                return array (
+                    'login' => $this->login,
+                    'lastLogin' => $result->value->lastLogin,
+                );
             }
         }
         throw new \Exception('Неверное сочетание Логина и Пароля', 401);
@@ -58,8 +61,9 @@ class AuthService
 
     public function login($credentials)
     {
-        $this->setUsername($credentials->username);
+        $this->setLogin($credentials->login);
         $this->setPassword($credentials->password);
+
         return $this->auth();
     }
 }
