@@ -47,12 +47,12 @@ class AuthService
         if (is_null($result->error)) {
             if ($result->value->login == $this->login && $result->value->password == $this->password) {
 
-                $result->value->lastLogin = time();
+                $result->value->lastLogon = time();
                 $bucket->replace($this->login, $result->value);
 
                 return array (
                     'login' => $this->login,
-                    'lastLogin' => $result->value->lastLogin,
+                    'lastLogon' => $result->value->lastLogon,
                 );
             }
         }
