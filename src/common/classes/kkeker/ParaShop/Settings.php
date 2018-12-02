@@ -14,5 +14,5 @@ class Settings
 {
     public $couchUrl = 'http://127.0.0.1';
     public $couchBucket = 'default';
-    public $couchUsersBucker = 'users';
+    public $couchUsersBucket = 'users';
 }
